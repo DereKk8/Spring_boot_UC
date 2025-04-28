@@ -2,6 +2,7 @@ package com.bicicletas.trayectos.logica;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -151,6 +152,34 @@ public class TrayectosService {
         
         // 3. Retorna la información formateada usando el toString personalizado
         return trayecto.toString();
+    }
+
+    // CU005 Consultar Resumen Trayectos
+    @Transactional(value = TxType.REQUIRED)
+    public String consultarResumenTrayectos(LocalDateTime fechaInicio, LocalDateTime fechaFin) 
+        throws Exception
+    {
+        // 2. Verifica que la fecha de inicio sea menor que la fecha final
+        if (fechaInicio.isAfter(fechaFin)) {
+            throw new Exception("La fecha de inicio debe ser menor a la fecha final");
+        }
+
+        // 3. Obtiene todos los trayectos en ese rango de fechas
+        List<Trayecto> trayectosEncontrados = trayectos.findEnRangoFechas(fechaInicio, fechaFin);
+
+        // 4. Formatea la información de todos los trayectos
+        StringBuilder resumen = new StringBuilder();
+        resumen.append("Resumen de Trayectos\n");
+        resumen.append("Período: ").append(fechaInicio).append(" a ").append(fechaFin).append("\n");
+        resumen.append("Total trayectos: ").append(trayectosEncontrados.size()).append("\n\n");
+
+        // Para cada trayecto, usa el toString personalizado que ya implementamos
+        for (Trayecto t : trayectosEncontrados) {
+            resumen.append("----------------------------------------\n");
+            resumen.append(t.toString()).append("\n");
+        }
+
+        return resumen.toString();
     }
 }
 

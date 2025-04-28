@@ -37,3 +37,5 @@ rectangle CycleTrainer {
 | | 2.1. Muestra un mensaje "La fecha de inicio debe ser menor a la fecha final" |
 | | 2.2. Termina | 
 
+3. Cuando no hay trayectos disponibles en el intervalo de tiempo suministrado
+
