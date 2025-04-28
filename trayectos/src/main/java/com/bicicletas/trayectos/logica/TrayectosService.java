@@ -64,7 +64,36 @@ public class TrayectosService {
 
     }
 
-}    
+    // CU002 Registrar Ubicación
+    @Transactional(value = TxType.REQUIRED)
+    public void registrarUbicacion(UUID trayectoId, Double longitud, Double latitud) 
+        throws Exception
+    {
+        // 2. Verifica que exista un trayecto con ese id
+        Trayecto trayecto = trayectos.findById(trayectoId)
+            .orElseThrow(() -> new Exception("No existe un trayecto con ese id"));
+
+        // 3. Verifica que el trayecto esté activo
+        if (!trayecto.isEnProceso()) {
+            throw new Exception("El trayecto no está activo");
+        }
+
+        // 5. Determina fecha y hora
+        LocalDateTime fechaActual = LocalDateTime.now();
+
+        // 6. Agrega una nueva ubicación con fecha y hora actual y la longitud y latitud
+        Ubicacion ubicacion = new Ubicacion();
+        ubicacion.setFechaHora(fechaActual);
+        ubicacion.setLongitud(longitud);
+        ubicacion.setLatitud(latitud);
+        ubicacion.setTrayecto(trayecto);
+        ubicacion = ubicaciones.save(ubicacion);
+
+        trayecto.getUbicaciones().add(ubicacion);
+        trayectos.save(trayecto);
+    }
+
+}
 
 
 
