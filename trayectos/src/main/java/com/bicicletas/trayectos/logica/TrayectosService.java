@@ -135,6 +135,23 @@ public class TrayectosService {
         trayectos.save(trayecto);
     }
 
+    // CU004 Consultar Trayecto
+    @Transactional(value = TxType.REQUIRED)
+    public String consultarTrayecto(UUID trayectoId) 
+        throws Exception
+    {
+        // 2. Verifica que exista un trayecto con ese id
+        Trayecto trayecto = trayectos.findById(trayectoId)
+            .orElseThrow(() -> new Exception("No se existe el trayecto que se desea consultar"));
+
+        // Verifica que el trayecto NO esté activo (debe estar finalizado)
+        if (trayecto.isEnProceso()) {
+            throw new Exception("No se puede consultar un trayecto que no ha finalizado");
+        }
+        
+        // 3. Retorna la información formateada usando el toString personalizado
+        return trayecto.toString();
+    }
 }
 
 
