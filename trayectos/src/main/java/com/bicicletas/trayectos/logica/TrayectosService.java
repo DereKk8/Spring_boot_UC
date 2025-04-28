@@ -93,6 +93,48 @@ public class TrayectosService {
         trayectos.save(trayecto);
     }
 
+    // CU003 Finalizar Trayecto
+    @Transactional(value = TxType.REQUIRED)
+    public void finalizarTrayecto(UUID trayectoId, Double longitud, Double latitud) 
+        throws Exception
+    {
+        // 2. Verifica que exista un trayecto con ese id
+        Trayecto trayecto = trayectos.findById(trayectoId)
+            .orElseThrow(() -> new Exception("No se existe el trayecto al que se desea agregar la ubicación"));
+
+        // 3. Verifica que el trayecto esté activo
+        if (!trayecto.isEnProceso()) {
+            throw new Exception("No se puede agregar una ubicación a un trayecto no activo");
+        }
+
+        // 5. Determina fecha y hora actual
+        LocalDateTime fechaActual = LocalDateTime.now();
+
+        //No se usa registrarUbicacion porque no se quiere agregar la ubicación al trayecto
+        // 6. Agrega una nueva ubicación con fecha y hora actual y la longitud y latitud
+        Ubicacion ubicacion = new Ubicacion();
+        ubicacion.setFechaHora(fechaActual);
+        ubicacion.setLongitud(longitud);
+        ubicacion.setLatitud(latitud);
+        ubicacion.setTrayecto(trayecto);
+        ubicacion = ubicaciones.save(ubicacion);
+
+        trayecto.getUbicaciones().add(ubicacion);
+
+        // 7. Calcula la duración del trayecto
+        long duracionEnSegundos = java.time.Duration.between(
+            trayecto.getFechaHoraInicio(), 
+            fechaActual
+        ).getSeconds();
+
+        // 8. Actualiza el trayecto con hora final, duración y estado inactivo
+        trayecto.setFechaHoraFin(fechaActual);
+        trayecto.setDuracion(duracionEnSegundos);
+        trayecto.setEnProceso(false);
+        
+        trayectos.save(trayecto);
+    }
+
 }
 
 
