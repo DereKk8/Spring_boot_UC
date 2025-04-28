@@ -1,0 +1,41 @@
+# Gitpod Configuration
+# ver: https://www.gitpod.io/docs/introduction/learn-gitpod/gitpod-yaml
+
+# Uso de imagen de Docker específica
+# ver: https://hub.docker.com/u/gitpod
+image: gitpod/workspace-java-23
+
+# Comandos a ejecutar al inicio del proyecto
+# - primera vez : before --> init --> command
+# - al reiniciar: before --> command
+tasks:
+
+  - name: Compila proyecto sin ejecutar pruebas
+    # before se ejecuta siempre
+    before: |
+      sdk env install
+
+    # init se ejecuta solo la primera vez
+    init: |
+      if [ -f pom.xml ]; then mvn package -DskipTests; fi
+
+    # command se ejecuta para iniciar servicios
+    command: |
+      if [ -f docker-compose.yml ]; then docker compose up -d; fi
+
+# Extensiones
+vscode:
+  extensions:
+    - redhat.java@1.40.0
+    - vscjava.vscode-java-test@0.43.0
+    - vscjava.vscode-java-debug
+    - vscjava.vscode-java-dependency
+    - vscjava.vscode-maven
+    - vmware.vscode-spring-boot
+    - vscjava.vscode-spring-initializr
+    - vscjava.vscode-spring-boot-dashboard
+    - ms-vscode.live-server
+    - jebbs.plantuml
+    - vsls-contrib.codetour
+    - ms-azuretools.vscode-docker
+

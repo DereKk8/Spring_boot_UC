@@ -1,0 +1,14 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic",
+
+    "plantuml.render": "PlantUMLServer",
+    "plantuml.jar": "",
+    "plantuml.server": "https://www.plantuml.com/plantuml/",
+    "plantuml.exportFormat": "png",
+    "plantuml.diagramsRoot": "/docs/uml",
+    "plantuml.exportOutDir": "/docs/images",
+
+    "markdown.preview.openMarkdownLinks": "inEditor",
+
+}

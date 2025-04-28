@@ -1,0 +1,116 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Paso a paso",
+  "steps": [
+    {
+      "file": "docs/use-cases/CU002-registrar-ubicacion.md",
+      "description": "## Revisar el caso de uso\n\nHaga un preview de los casos de uso `Agregar ubicación al Trayecto` y revise los pasos.\n\nLos pasos del *flujo de eventos (o guión del caso de uso)* representan \n- las acciones que hace el usuario y las que hace el software\n- describe lo que tiene que hacer el software\n\nNote que, en este caso de uso\n- Los pasos 1 y 4 representan acciones del usuario, en este caso, el ingreso de datos al sistema.\n- Allí dice que el actor ingresa el `id` del trayecto, la `longitud` y la `latitud` de una nueva ubicación.\n\n📝",
+      "line": 26
+    },
+    {
+      "file": "docs/use-cases/CU002-registrar-ubicacion.md",
+      "description": "## Revise los pasos del software en el caso de uso\n\nRevise ahora los pasos que debe hacer el software. \n\n- 2. verifica que exista un trayecto con ese id\n- 3. verifica que el trayecto esté activo\n- 5. Determina fecha y hora\n- 6. Agrega  una nueva ubicación con fecha y hora actual y la longitud y latitud de la ubicación al trayecto en curso \n\nNote que estos pasos son los que se deben incluir en el método que implementa el caso de uso.\n\n📝",
+      "line": 27
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Implemente un método para el caso de uso \n\nCree un método en la clase `TrayectoService` para implementar el caso de uso de **Registrar Ubicación**.\n- Use un nombre como `agregarUbicacionAlTrayecto()\" para mostrar que implementa el caso de uso\n- Incluya como parámetros los datos que ingresa el actor en el caso de uso.\n- Indique que el método puede lanzar excepciones.\n- Agregue la anotación `@Transactional(value = TxType.REQUIRED)` para indicar que el caso de uso realiza una transacción independiente a la base de datos.\n\n---\n\nUse un código como el siguiente:\n```\n    // CU002 : Agregar ubicación al Trayecto\n    // 1. Ingresa el id del trayecto en curso\n    // 4. Ingresa la longitud y la latitud de la ubicación actual\n    \n    @Transactional(value = TxType.REQUIRED)\n    public UUID agregarUbicacionAlTrayecto(UUID idTrayecto, Double longitud, Double latitud) \n        throws Exception {\n\n    }\n```\n\n💻",
+      "line": 70
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Agregue código que implementa el caso de uso (1)\n\nPara el paso\n- 2. verifica que exista un trayecto con ese id\n\nEs necesario buscar el trayecto en la base de datos.\nPara hacer esto, pudemos usar el atributo `trayectos` que es un repositorio que permite leer, grabar y borrar datos de la base de datos.\n\n---\nUse un código como el que sigue...\n\n```\n        // 2. verifica que exista un trayecto con ese id\n\n        // busca el trayecto usando el parámetro `idTrayecto`\n        Optional<Trayecto> optTrayecto = trayectos.findById(idTrayecto);\n\n        // lanza una excepción si no existe el trayecto\n        if (optTrayecto.isEmpty()) {\n            throw new Exception(\"No existe un trayecto con el id \" + idTrayecto)\n        }\n\n```\n\n\n💻",
+      "line": 66
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Agrege código que implementa el caso de uso (2)\n\npara el paso\n- 3. verifica que el trayecto esté activo\n\nEs necesario revisar la propiedad `en Proceso` del trayecto.\n\n---\n\nUse código como el siguiente...\n```\n        // optTrayecto es el valor que retorna trayectos.findById()\n\n        // 3. verifica que el trayecto esté activo\n\n        // obtiene el objeto con el trayecto actual\n        Trayecto trayectoActual = optTrayecto.get();\n\n        // lanza una excepción si el trayecto no está en proceso\n        if (! trayectoActual.isEnProceso()) {\n            throw new Exception(\"El trayecto con el id \" + idTrayecto + \"no está activo\");\n        }\n\n```\n\n\n💻",
+      "line": 67,
+      "selection": {
+        "start": {
+          "line": 12,
+          "character": 1
+        },
+        "end": {
+          "line": 23,
+          "character": 1
+        }
+      }
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Agregue código que implementa el caso de uso (3)\n\npara el paso\n- 5. Determina fecha y hora\n\nEs necesario crear un objeto de tipo `Date`.\n\n---\n\nUse código como el siguiente...\n```\n        // 5. Determina fecha y hora\n\n        // obtiene un objeto Date con la fecha actual\n        Date fechaActual = new Date();\n\n```\n\n\n💻",
+      "line": 68,
+      "selection": {
+        "start": {
+          "line": 12,
+          "character": 1
+        },
+        "end": {
+          "line": 15,
+          "character": 39
+        }
+      }
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Agregue código que implementa el caso de uso (4)\n\npara el paso\n- 6. Agrega  una nueva ubicación con fecha y hora actual y la longitud y latitud de la ubicación al trayecto en curso\n\n---\n\nUse código como el siguiente...\n```\n        // 6. Agrega  una nueva ubicación con fecha y hora actual \n        //    y la longitud y latitud de la ubicación al trayecto en curso\n\n        // Crea una nueva ubicación\n        Ubicacion ubicacion = new Ubicacion();\n        ubicacion.setFechaHora(fechaHora);\n        ubicacion.setLongitud(longitud);\n        ubicacion.setLatitud(latitud);\n        ubicacion.setTrayecto(trayectoActual);\n\n        // guarda la ubicación\n        ubicacion = ubicaciones.save(ubicacion);\n\n        // agrega la ubicación al trayecto\n        trayectoActual.getUbicaciones().add(ubicacion);\n        trayectoActual = trayectos.save(trayectoActual);\n\n        // returna el id\n        return trayectoActual.getId();\n\n```\n\n\n💻",
+      "line": 69,
+      "selection": {
+        "start": {
+          "line": 10,
+          "character": 1
+        },
+        "end": {
+          "line": 29,
+          "character": 1
+        }
+      }
+    },
+    {
+      "file": "docs/use-cases/CU002-registrar-ubicacion.md",
+      "description": "## Revisar las Excepciones de los casos de uso\n\nNote que el caso de uso tiene dos excepciones:\n\n- Cuando no existe un trayecto con ese id\n- Cuando el trayecto seleccionado no está activo\n\nEsto significa que se necesitan al menos tres casos de prueba, tres pruebas unitarias:\n\n1. **Exitoso:** Agregar una ubicación con éxito\n2. **Excepción 1:** Agregar una ubicación con un trayecto que no existe\n3. **Excepción 2:** Agregar una ubicación con un trayecto que no está activo\n\n\n📝",
+      "line": 35
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agregar un método para la prueba exitosa\n\nPara la prueba automatizada del escenario exitoso del caso de uso, \n- Agregue una nueva prueba automatizadas en la clase `TrayectosServiceTests`, en donde se tienen las pruebas de unidad.\n\nAgregue un método para la prueba automatizadas,\n- Use un nombre del método que muestre lo que realiza la prueba, p.ej. un nombre como `agregarUbicacion_adicionaUbicacionAlTrayecto()`\n- Agregue la anotación `@Test` para indicar que este método es una prueba automatizada, y \n- Agregue la anotación `@Transactional` para indicar que esta prueba ejecuta transacciones en la base de datos. \n\n---\n\nUse código similar al siguiente,\n\n```\n    @Test\n\t@Transactional\n\tvoid agregarUbicacion_adicionaUbicacionAlTrayecto() {\n\n    }    \n```\n\n📝",
+      "line": 81
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Revisión del código de la prueba automatizada\n\nPara las pruebas automatizadas es necesario construir código que realice tres tareas\n\n- `Arrange`: Preparar el sistema (por ejemplo, agregando una serie de datos) para tener el escenario listo para realizar la prueba.\n- `Act`: Realizar la tarea o el caso de uso que se debe probar.\n- `Assert`: Revisar que la tarea o el caso de uso retorna los resultados y ejecuta los cambios en los datos que están esperados.\n\n---\n\nPara considerar estos tres puntos, agregue código con comentarios indicando los tres pasos:\n\n```    \n\t\ttry {\n\n            // -- Arrange: Prepara la prueba\n\n\t\t    // -- Act: Ejecuta la operación que se debe probar\n\n\t\t    // -- Assert: Revisa el resultado\n\n\t\t} catch (Exception e) {\n\t\t\tfail(\"Genera excepción agregando ubicación a un trayecto y no debería\", e);\n\t\t}            \n```\n\n\n📝",
+      "line": 85
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agregar el \"Arrange\" de la prueba de unidad\n\nConsiderando que el caso de uso agrega la ubicación a un trayecto activo,\n- Se necesita tener un trayecto activo\n\nPor tanto, agregue código para el \"arrange\" para, \n- agregar un trayecto activo\n- revisar que el trayecto fue creado \n\n---\nAgregue el código en el \"arrange\" de la prueba de unidad,\n\n```\n        // -- Arrange: Prepara la prueba\n\n\t\t\t// Crea un trayecto a la que se va a agregar la ubicación\n\t\t\tUUID idTrayecto = servicio.iniciarTrayecto(27.0, 42.0);\n\n\t\t\t// revisa si se almacenó el trayecto\n\t\t\tOptional<Trayecto> resultado = trayectos.findById(idTrayecto);\n\t\t\tassertFalse(resultado.isEmpty(), \"No se grabó el trayecto\");\n\n\t\t\tTrayecto trayecto = resultado.get();\n\t\t\tassertTrue(trayecto.isEnProceso(), \"No aparece como un trayecto activo\");\n\n\t\t\tassertEquals(1, trayecto.getUbicaciones().size(), \"No se crea el trayecto con una sola ubicación\");        \n```\n\n\n📝",
+      "line": 85
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agregar el \"Act\" de la prueba de unidad\n\nConsiderando que el caso de uso agrega la ubicación a un trayecto activo,\n- Se necesita ejecutar el caso de uso\n\nPor tanto, agregue código para el \"arrange\" para, \n- ejecute el caso de uso que se desea probar\n\n---\nUse un código como el siguiente\n\n```\n\t\t// -- Act: Ejecuta la operación que se debe probar\n\n\t\t\t// Agrega una  ubicación a ese trayecto invocando al caso de uso\n\t\t\tservicio.agregarUbicacionAlTrayecto(idTrayecto, 27.2, 43.2);\n\n```\n\n\n📝",
+      "line": 92
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agregar el \"Assert\" de la prueba de unidad\n\nConsiderando que el caso de uso agrega la ubicación a un trayecto activo,\n- Se necesita revisar que la ubicación fue agregada a la trayectoria\n\nPor tanto, agregue código para el \"arrange\" para, \n- cargue de nuevo la trayectoria\n- revise que la ubicación fue agregada\n- revise que la última ubicación corresponda con los datos que se suministraron\n\n---\nUse un código como el siguiente\n\n```\n\t\t// -- Assert: Revisa el resultado\n\n\t\t\t// obtiene un trayecto actualizado\n\t\t\tTrayecto trayectoActualizado = trayectos.findById(idTrayecto).get();\n\n\t\t\t// revisa que el trayecto tenga dos ubicaciones\n\t\t\tassertEquals(1, trayectoActualizado.getUbicaciones().size(), \"El trayecto no se actualiza y queda con dos ubicaciones\");\n\n\t\t\t// revisa que la nueva ubicación tenga los datos correctos\n\t\t\tUbicacion ultimaUbicacion = trayectoActualizado.getUbicaciones().get(1);\n\t\t\tassertEquals(27.2, ultimaUbicacion.getLongitud());\n\t\t\tassertEquals(43.2, ultimaUbicacion.getLatitud());\n\n```\n\n\n📝",
+      "line": 98
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agrega un método para la prueba con la Excepción 1\n\nPara la excepción\n- 2. Cuando no existe un trayecto con ese id\n\nEs necesario revisar si el caso de uso falla cuando se intenta agregar una ubicación a un trayecto que no existe.\n\nNótese que, en este caso de prueba, la prueba sale bien si el caso de uso falla.\n\n---\nUse un código como el siguiente\n```\n\t@Test\n    @Transactional\n    void agregarUbicacionTrayectoInexistente_Falla() {\n\n\t\ttry {\n\n\t\t// -- Arrange: Prepara la prueba\n\n\t\t\t// No es necesario hacer nada\n\n\t\t// -- Act: Ejecuta la operación que se debe probar\n\n\t\t\t// Agrega una  ubicación a ese trayecto invocando al caso de uso\n\t\t\tUUID idTrayecto = UUID.randomUUID();\n\t\t\tservicio.agregarUbicacionAlTrayecto(idTrayecto, 27.2, 43.2);\n\n\n\t\t// -- Assert: Revisa el resultado\n\n\t\t\t// la prueba falla si no se genera una excepción\n\t\t\tfail(\"No generó excepción al agregar ubicación a un trayecto inexistente\");\n\n\t\t} catch (Exception e) {\n\t\t\t// ok -- debía generar excepcion\n\t\t}\n\t\t\t\t\n\t}\n\n```\n\n📝",
+      "line": 122
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Agrega un método para la prueba con la Excepción 2\n\nPara la excepción en el caso de uso\n- 3. Cuando el trayecto seleccionado no está activo\n\nEs necesario revisar que el caso de uso falla cuando se intenta agregar una ubicación a un trayecto que no está activo.\n\n\n---\nUse un código como el siguiente\n```\n\t@Test\n    @Transactional\n    void agregarUbicacionTrayectoInactivo_Falla() {\n\n\t\ttry {\n\n\t\t// -- Arrange: Prepara la prueba\n\n\t\t\t// Crea un trayecto\n\t\t\tUUID idTrayecto = servicio.iniciarTrayecto(27.0, 42.0);\n\n\t\t\t// lee el trayecto de la base de datos\n\t\t\tTrayecto trayecto = trayectos.findById(idTrayecto).orElse(null);\n\t\t\tassertNotNull(trayecto, \"No se pudo leer el trayecto recien creado\");\n\n\t\t\t// lo cambia a inactivo\n\t\t\ttrayecto.setEnProceso(false);\n\t\t\ttrayectos.save(trayecto);\n\n\t\t// -- Act: Ejecuta la operación que se debe probar\n\n\t\t\t// Agrega una  ubicación a ese trayecto invocando al caso de uso\n\t\t\tservicio.agregarUbicacionAlTrayecto(idTrayecto, 27.2, 43.2);\n\n\n\t\t// -- Assert: Revisa el resultado\n\n\t\t\t// la prueba falla si no se genera una excepción\n\t\t\tfail(\"No generó excepción al agregar ubicación a un trayecto inexistente\");\n\n\t\t} catch (Exception e) {\n\t\t\t// ok -- debía generar excepcion\n\t\t}\n\t\t\t\t\n\t}\n```\n\n📝",
+      "line": 123
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Próximos pasos\n\nYa se implementó el caso de uso CU002.\n\nA continuación, implemente los otros casos de uso\n\n**Próximos pasos:** Implementar\n- CU003: Finalizar Trayecto\n- CU004: Consultar Trayecto\n- CU005: Consultar Resumen Trayecto\n\n\n🥳",
+      "line": 124
+    }
+  ]
+}

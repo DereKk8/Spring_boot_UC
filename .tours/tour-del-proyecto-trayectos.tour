@@ -1,0 +1,97 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Código Inicial",
+  "steps": [
+    {
+      "file": "pom.xml",
+      "description": "## Revisión del Proyecto \n\nEste es un proyecto desarrollado en Java utilizando Maven. \n\nEn la carpeta raíz del proyecto hay un archivo `pom.xml` con la definición de los módulos (subproyectos) en el repositorio.\n\nEl proyecto en la raíz se llama `parent-project`\n----\n```\n\t<groupId>com.bicicletas</groupId>\n\t<artifactId>parent-project</artifactId>\n\t<version>0.0.1-SNAPSHOT</version>\n    <packaging>pom</packaging>\n\t<name>parent-project</name>    \n```\n\n📝",
+      "line": 10
+    },
+    {
+      "file": "pom.xml",
+      "description": "## Módulos del proyecto\n\nEn el archivo `pom.xml` hay código XML que `<modules>...</modules>` que define los módulos del proyecto. \n\nEn esta sección se menciona un solo módulo:\n- Módulo `trayectos` que está en la carpeta con ese mismo nombre `trayectos`.\n\n---\n```\n    <modules>\n        <module>trayectos</module>\n    </modules>        \n```\n\n📝",
+      "line": 15
+    },
+    {
+      "file": "trayectos/pom.xml",
+      "description": "## Configuración del Módulo Trayectos\n\nDentro de la carpeta `trayectos` hay otro archivo `pom.xml` que define la configuración y las dependencias del módulo `trayectos`.\n\n---\n```\n(raíz)\n  |\n  + trayectos/\n  |  + pom.xml    -- configuración del módulo trayectos\n  |\n  + pom.xml       -- configuración de todo el proyecto\n\n```\n\n📝",
+      "line": 15
+    },
+    {
+      "file": "trayectos/pom.xml",
+      "description": "## Revisión de dependencias del módulo Trayectos\n\nEl proyecto `trayectos` tiene una serie de **dependencias** que se conocen como `starters` de Spring Boot.\n\n- `starter-web`       : permite crear aplicaciones y servicios web\n- `devtools`          : para que la aplicación se cargue de nuevo cada vez que se modifican los archivos\n- `data-jpa`          : permite crear aplicaciones que se conectan a bases e datos usando JPA\n- `mysql-connector-j` : es un driver para conectarse a bases de datos MySQL\n- `starter-test`      : para crear pruebas de unidad automatizadas\n- `lombok`            : para generar automáticamente código de clases, como los métodos `get()` y `set()`\n\n📝",
+      "line": 28
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/TrayectosApplication.java",
+      "description": "## Revisión de la clase TrayectosApplication\n\nLa clase `TrayectosApplication` tiene la anotación `@SpringBootApplication`.\n\nEsta anotación se usa para indicar que este proyecto usa el framework de Spring Boot y que todos los paquetes debajo de `com.bicicletas.trayectos` contiene clases que están anotadas y se deben cargar automáticamente.\n\n📝",
+      "line": 7
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/modelo/Trayecto.java",
+      "description": "## Revisión de la Entidad Trayecto\n\nEn el paquete `com.bicicletas.trayectos.modelo`, \n\n- la clase `Trayecto` está anotada con `@Entity`, indica que es una clase de tipo Entidad.\n- Spring Boot convierte las entidades en tablas en la base de datos.\n\n📝",
+      "line": 24
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/modelo/Trayecto.java",
+      "description": "## Atributos de la Entidad Trayecto\n\nLa clase tiene una serie de atributos:\n\n- `id` de tipo `UUID`, un identificado único universal,  anotada con `@Id` indicando que es una llave primaria.\n- `fechaHoraInicio` de tipo `Date`, anotado con `@Temporal` indicando que se debe guarda como un `TIMESTAMP` (con fecha y hora)\n- `fechaHoraFin` de tipo `Date`\n- `duracion` de tipo `Long`\n- `enProceso` de tipo `boolean`\n\n📝",
+      "line": 28
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/modelo/Trayecto.java",
+      "description": "## Relaciones de la Entidad Trayecto\n\nLa Entidad `Trayecto` también tiene un atributo que representa su relación con la entidad `Ubicación`\n\nEl atributo,\n- la lista `ubicaciones` es una lista de objetos `Ubicacion` y está anotado con `@OneToMany`, indicando que es una relación de uno a muchos.\n\n📝",
+      "line": 41
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/modelo/Ubicacion.java",
+      "description": "## Revisión de la entidad Ubicación\n\nLa clase `Ubicacion` también está anotada como `@Entity`, indicando que es una entidad que se va a convertir en una tabla de la base de datos.\n\n📝\n",
+      "line": 21
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/modelo/Ubicacion.java",
+      "description": "## Revisión de los atributos de la entidad Ubicación\n\nLa clase `Ubicacion` tiene una serie de atributos que se convierten en columnas en la tabla correspondiente:\n\n- el atributo `id`, de tipo `UUID`, está anotado con `@Id` indicando que es el identificador (la llave primaria)\n- el atributo `hora`, de tipo `Date`, esta anotado con `@Temporal` e indica que se debe grabar como un `TIMESTAMP`\n- el atributo `longitud`, de tipo `Double`\n- el atributo `latitud`, de tipo `Double`\n\ny, además, tiene una relación con la entidad `Trayecto`\n\n- el atributo `trayecto`, de tipo `Trayecto`, está anotado con `@ManyToOne`, indicando que tiene una relación de muchos a uno\n\n📝",
+      "line": 25
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/dataAccess/TrayectosRepository.java",
+      "description": "## Revisión de repositorio para Trayectos\n\nLa interfaz `TrayectosRepository` está anotada como `@Repository` indicando que es un repositorio, una clase que permite crear, modificar y eliminar datos en la tabla.\n\nLa interfaz extiende `JpaRepository<Trayecto, UUID>` indicando que almacena objetos de tipo `Trayecto` y que la llave primaria es de tipo `UUID`.\n\n📝",
+      "line": 16
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/dataAccess/UbicacionesRepository.java",
+      "description": "## Revisión del repositorio de Ubicaciones\n\nLa interfaz `UbicacionesRepository` está anotada como `@Repository` indicando que es un repositorio.\n\nLa interfaz extiende `JpaRepository<Ubicacion, UUID>` indicando que almacena objetos de tipo `Ubicacion` y que la llave primaria es de tipo `UUID`.\n\n📝\n",
+      "line": 12
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Revisión de la lógica de negocio de Trayectos\n\nLa clase `TrayectosService` está anotada con `@Service` indicando que es una clase que contiene servicios de lógica de negocios.\n\n📝",
+      "line": 20
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Revisión del método que implementa el caso de uso CU001\n\nEl método `iniciarTrayecto` implementa el caso de uso **CU001 - Iniciar Trayecto**.\n\nEl método,\n- Recibe como parámetros los datos que ingresa el actor en el caso de uso.\n- En este caso, el método recibe como parámetros la ubicación actual, es decir valores de `longitud` y `latitud`.\n- El método está anotado con `@Transactional` para indicar que el método realiza una transacción en la base de datos.\n- La anotación ` @Transactional(value = TxType.REQUIRES_NEW)` indica que el caso de uso se ejecuta como una transacción independiente.\n\n📝",
+      "line": 32
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Revisión de las pruebas al caso de uso\n\nLa clase `Cu001_IniciarTrayectoTests` incluye las pruebas de unidad para el caso de uso **CU001 Iniciar Trayecto**. \n\nEsta clase está anotada con `@SpringBootTest`, para indicar que esta clase tiene pruebas de SpringBoot.\n\nEn Visual Studio Code (y otros entornos de desarrollo), al lado de la clase y de los métodos se pueden ver íconos para ejecutar las pruebas.\n\n📝",
+      "line": 23
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Revisión de prueba para el caso de uso CU001\n\nEl método `iniciarTrayecto_almacenaTrayectoYUbicacion` implementa una prueba del caso de uso  en el método `iniciarTrayecto`.\n\nEste método está anotado con `@Test` para indicar que es una prueba automatizada y con `@Transactional` indicando que es un método que ejecuta transacciones en la base de datos. \n\n📝\n",
+      "line": 36
+    },
+    {
+      "file": "trayectos/src/test/java/com/bicicletas/trayectos/logica/Cu001_IniciarTrayectoTests.java",
+      "description": "## Revisión de prueba para el caso de uso CU001 (2)\n\nEl método `iniciarTrayectoConOtroActivo_falla` implementa una prueba para una excepción del caso de uso en el método `iniciarTrayecto`.\n\nEn esta prueba, se espera que el caso de uso falle. Nótese que la prueba ejecuta `fail()` cuando no se genera una excepción.  \n\n📝",
+      "line": 84
+    },
+    {
+      "file": "trayectos/src/main/java/com/bicicletas/trayectos/logica/TrayectosService.java",
+      "description": "## Siguientes pasos\n\nPara implementar los otros casos de uso...\n- se pueden agregar métodos a la clase `TrayectosService`, y \n- agregar pruebas de unidad en la clase `TrayectosServiceTests`\n\n**Próximos pasos:** implementar otros casos de uso.\n\n🥳",
+      "line": 67
+    }
+  ],
+  "isPrimary": true
+}

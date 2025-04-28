@@ -1,0 +1,29 @@
+@startuml clases-dominio
+
+left to right direction
+
+package com.bicicletas.trayecto {
+
+  package modelo {
+
+    class Trayecto {
+    + UUID id  
+    + Date horaInicio
+    + Date horaFin
+    + Long duracion
+    + Boolean enProceso
+    }
+
+    class Ubicacion {
+    + UUID id
+    + Date hora
+    + Long longitud
+    + Long latitud 
+    }
+
+    Trayecto *-- "0..*" Ubicacion : ubicaciones	
+
+  }
+}
+
+@enduml
