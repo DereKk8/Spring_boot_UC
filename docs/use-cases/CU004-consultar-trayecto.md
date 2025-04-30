@@ -37,6 +37,7 @@ rectangle CycleTrainer {
 | | 2.2. Termina | 
 
 3. Cuando no esta finalizado el trayecto
+
 | Actor  | Sistema |
 |:-------|:---------|
 | | 3.1. Muestra un mensaje "No se puede consultar un trayecto que no ha finalizado" |

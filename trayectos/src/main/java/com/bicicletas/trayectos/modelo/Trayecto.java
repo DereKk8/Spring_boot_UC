@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,7 @@ public class Trayecto {
 
     boolean enProceso = false;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "trayecto", cascade = CascadeType.ALL)
     List<Ubicacion> ubicaciones = new ArrayList<>();
 
